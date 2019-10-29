@@ -9,6 +9,12 @@ class LinkedPair:
         self.value = value
         self.next = None
 
+    def __str__(self):
+        return f'LP({self.key}, {self.value}, {self.next})'
+
+    def __repr__(self):
+        return f'LP({self.key}, {self.value}, {self.next})'
+
 
 class HashTable:
     '''
@@ -73,7 +79,9 @@ class HashTable:
             current = self.storage[index]
             while current is not None:
                 if current.key == key:
-                    current.next = self.storage[index]
+                    self.storage[index] = current.next
+                current = current.next
+            print('Key not found.')
         else:
             print("Key not found.")
 
@@ -105,13 +113,16 @@ class HashTable:
         '''
         self.capacity *= 2
         new_storage = [None] * self.capacity
-
-        for item in self.storage:
-            if item is not None:
-                index = self._hash_mod(item.key)
-                new_storage[index] = item
-
+        old_storage = self.storage
         self.storage = new_storage
+
+        for item in old_storage:
+            if item is not None:
+                # index = self._hash_mod(item.key)
+                current = item
+                while current is not None:
+                    self.insert(current.key, current.value)
+                    current = current.next
 
 
 if __name__ == "__main__":
@@ -125,6 +136,13 @@ if __name__ == "__main__":
     print(ht1.retrieve('key3'))
     print(ht1.retrieve('key4'))
     print(ht1.storage)
+    ht1.resize()
+    print(ht1.storage)
+    print('after resize')
+    print(ht1.retrieve('key1'))
+    print(ht1.retrieve('key2'))
+    print(ht1.retrieve('key3'))
+    print(ht1.retrieve('key4'))
     # ht = HashTable(2)
 
     # ht.insert("line_1", "Tiny hash table")
